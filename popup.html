@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Upload to GitHub Pages</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;padding:12px}
+  input, button{margin:4px 0}
+</style>
+</head>
+<body>
+<h3>GitHub Pages Uploader</h3>
+
+<label>Repository (owner/repo): <input type="text" id="repo" placeholder="octocat/Hello-World"></label><br>
+<label>Branch (default: main): <input type="text" id="branch" placeholder="main"></label><br>
+
+<label>GitHub PAT (repo scope): <input type="password" id="token" placeholder="ghp_..."></label><br>
+
+<label>Target folder in repo: <input type="text" id="folder" placeholder="images/"></label><br>
+
+<label>Resize width (px, 0 to keep original): <input type="number" id="width" value="800"></label><br>
+<label>Resize height (px, 0 to keep original): <input type="number" id="height" value="600"></label><br>
+
+<label>Quality (0–100, default 80): <input type="number" id="quality" value="80"></label><br>
+
+<input type="file" id="files" multiple accept="image/*"><br>
+
+<button id="upload">Upload</button>
+
+<pre id="log"></pre>
+
+<script src="popup.js"></script>
+</body>
+</html>
