@@ -3,31 +3,124 @@
 <head>
 <meta charset="utf-8">
 <title>Upload to GitHub Pages</title>
+<link rel="stylesheet" href="css/uikit.min.css">
+<script src="js/uikit.min.js"></script>
+<script src="js/uikit-icons.min.js"></script>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;padding:12px}
-  input, button{margin:4px 0}
+  body {
+    min-width: 500px;
+    padding: 10px;
+    background-color: #f5f5f5;
+  }
+  .uk-card {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .uk-form-stacked .uk-form-label {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .uk-form-input, .uk-form-textarea {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  .uk-button-primary {
+    background-color: #4285f4;
+    border: none;
+  }
+  .uk-button-primary:hover {
+    background-color: #3367d6;
+  }
+  #log {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
-<h3>GitHub Pages Uploader</h3>
+<div class="uk-container">
+  <div class="uk-card uk-card-default uk-margin">
+    <div class="uk-card-header">
+      <h3 class="uk-card-title">GitHub Pages Uploader</h3>
+    </div>
+    <div class="uk-card-body">
+      <form class="uk-form-stacked">
+        <div class="uk-margin">
+          <label class="uk-form-label" for="repo">Repository (owner/repo)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="repo" type="text" placeholder="octocat/Hello-World">
+          </div>
+        </div>
 
-<label>Repository (owner/repo): <input type="text" id="repo" placeholder="octocat/Hello-World"></label><br>
-<label>Branch (default: main): <input type="text" id="branch" placeholder="main"></label><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="branch">Branch (default: main)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="branch" type="text" placeholder="main" value="main">
+          </div>
+        </div>
 
-<label>GitHub PAT (repo scope): <input type="password" id="token" placeholder="ghp_..."></label><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="token">GitHub PAT (repo scope)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="token" type="password" placeholder="ghp_...">
+          </div>
+        </div>
 
-<label>Target folder in repo: <input type="text" id="folder" placeholder="images/"></label><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="folder">Target folder in repo</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="folder" type="text" placeholder="images/">
+          </div>
+        </div>
 
-<label>Resize width (px, 0 to keep original): <input type="number" id="width" value="800"></label><br>
-<label>Resize height (px, 0 to keep original): <input type="number" id="height" value="600"></label><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="width">Resize width (px, 0 to keep original)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="width" type="number" value="800">
+          </div>
+        </div>
 
-<label>Quality (0–100, default 80): <input type="number" id="quality" value="80"></label><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="height">Resize height (px, 0 to keep original)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="height" type="number" value="600">
+          </div>
+        </div>
 
-<input type="file" id="files" multiple accept="image/*"><br>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="quality">Quality (0–100, default 80)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="quality" type="number" value="80">
+          </div>
+        </div>
 
-<button id="upload">Upload</button>
+        <div class="uk-margin">
+          <label class="uk-form-label">Select images to upload</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="files" type="file" multiple accept="image/*">
+          </div>
+        </div>
 
-<pre id="log"></pre>
+        <div class="uk-margin">
+          <div class="uk-form-controls">
+            <button class="uk-button uk-button-primary" id="upload" type="button">Upload</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="uk-margin">
+        <h4 class="uk-card-title">Log</h4>
+        <pre id="log" class="uk-pre"></pre>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="popup.js" type="module"></script>
 </body>
