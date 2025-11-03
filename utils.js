@@ -123,7 +123,7 @@ export async function commitAndPush(owner, repo, token, branch, treeSha, parentS
  */
 export async function getBranchInfo(owner, repo, branch, token) {
   const refRes = await githubFetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`,
+    `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`,
     {},
     token
   );
