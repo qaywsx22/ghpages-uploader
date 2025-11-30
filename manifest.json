@@ -13,12 +13,17 @@
     "scripting",
     "tabs"
   ],
-  "host_permissions": [
+    "host_permissions": [
     "https://api.github.com/*"
   ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "background": {
     "service_worker": "background.js"
   },
+
   "action": {
     "default_icon": "icons/icon48.png"
   }

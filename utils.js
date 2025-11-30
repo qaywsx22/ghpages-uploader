@@ -42,6 +42,26 @@ export async function githubFetch(url, init = {}, token) {
 }
 
 /**
+ * List files in a repository folder on a given branch using the
+ * GitHub Contents API.
+ * Returns an array of objects with at least { path, download_url }.
+ */
+export async function listFolderFiles(owner, repo, branch, folder, token) {
+  const trimmed = (folder || '').replace(/^\/+|\/+$/g, '');
+  const encodePath = p => p.split('/').map(encodeURIComponent).join('/');
+  const base = `https://api.github.com/repos/${owner}/${repo}/contents`;
+  const url = trimmed
+    ? `${base}/${encodePath(trimmed)}?ref=${encodeURIComponent(branch)}`
+    : `${base}?ref=${encodeURIComponent(branch)}`;
+
+  const res = await githubFetch(url, {}, token);
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to list folder contents');
+  if (!Array.isArray(json)) return [];
+  return json.filter(item => item.type === 'file');
+}
+
+/**
  * Create a blob in the repo and return its SHA.
  */
 export async function createBlob(owner, repo, token, data, encoding = 'base64') {
@@ -58,6 +78,7 @@ export async function createBlob(owner, repo, token, data, encoding = 'base64') 
   if (!res.ok) throw new Error(json.message || 'Blob creation failed');
   return json.sha;
 }
+
 
 /**
  * Create a new tree that adds or updates the given paths.

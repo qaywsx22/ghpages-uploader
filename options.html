@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GitHub Pages Uploader – Options</title>
+<link rel="stylesheet" href="css/uikit.min.css">
+<link rel="stylesheet" href="css/options.css">
+<script src="js/uikit.min.js"></script>
+<script src="js/uikit-icons.min.js"></script>
+</head>
+<body>
+<div class="uk-container uk-container-small">
+  <div class="uk-card uk-card-default uk-margin">
+    <div class="uk-card-header">
+      <h3 class="uk-card-title">GitHub Pages Uploader – Options</h3>
+    </div>
+    <div class="uk-card-body">
+      <form class="uk-form-stacked">
+        <div class="uk-margin">
+          <label class="uk-form-label" for="repo">Default repository (owner/repo)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="repo" type="text" placeholder="octocat/Hello-World">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="branch">Default branch (default: main)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="branch" type="text" placeholder="main" value="main">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="token">GitHub PAT (stored separately, disabled here)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="token" type="password" placeholder="ghp_..." disabled>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="folder">Default target folder in repo</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="folder" type="text" placeholder="images/">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="width">Default resize width (px, 0 to keep original)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="width" type="number" value="800">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="height">Default resize height (px, 0 to keep original)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="height" type="number" value="600">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="quality">Default quality (0–100, default 80)</label>
+          <div class="uk-form-controls">
+            <input class="uk-form-input" id="quality" type="number" value="80">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <div class="uk-form-controls">
+            <button class="uk-button uk-button-primary" id="save-options" type="button">Save</button>
+          </div>
+        </div>
+      </form>
+      <div id="status" class="uk-text-meta"></div>
+    </div>
+  </div>
+</div>
+
+<script src="options.js" type="module"></script>
+</body>
+</html>

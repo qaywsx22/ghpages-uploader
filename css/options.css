@@ -1,0 +1,32 @@
+body {
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.uk-card {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.uk-form-stacked .uk-form-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.uk-form-input,
+.uk-form-textarea {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.uk-button-primary {
+  background-color: #4285f4;
+  border: none;
+}
+
+.uk-button-primary:hover {
+  background-color: #3367d6;
+}
+
+#status {
+  margin-top: 10px;
+}
