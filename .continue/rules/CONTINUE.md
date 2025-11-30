@@ -191,4 +191,12 @@ The extension utilizes the UIKit design library to provide a modern, responsive,
 - [UIKit Documentation](https://getuikit.com/docs/)
 - [UIKit CSS Framework](https://getuikit.com/)
 - [UIKit JavaScript Components](https://getuikit.com/docs/javascript)
-```
+
+## Recent Changes (Full-page UI Refactor)
+
+- Switched from popup-based UI to a full-page uploader opened by clicking the extension toolbar icon.
+- Added `tab.html` and `tab.js` as the main UIKit-based full-page interface.
+- Introduced `uploader.js` to share upload logic between UIs (currently used by the full-page tab).
+- Added `background.js` service worker to handle `chrome.action.onClicked` and open `tab.html`.
+- Updated `manifest.json` to use a background service worker and removed `default_popup`.
+- Marked `popup.html` and `popup.js` as legacy/unused; they can be deleted.
