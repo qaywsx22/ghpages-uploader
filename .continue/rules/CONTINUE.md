@@ -200,3 +200,13 @@ The extension utilizes the UIKit design library to provide a modern, responsive,
 - Added `background.js` service worker to handle `chrome.action.onClicked` and open `tab.html`.
 - Updated `manifest.json` to use a background service worker and removed `default_popup`.
 - Marked `popup.html` and `popup.js` as legacy/unused; they can be deleted.
+
+## Recent Changes (Previews, options, and styling)
+
+- Added existing-images and upload-images preview sections with checkboxes allowing selective upload/deletion in a single commit.
+- Implemented GitHub folder listing via `listFolderFiles` to fetch current images from the target repo folder.
+- Extended commit flow to handle both new uploads and deletions in one Git tree/commit.
+- Added `options.html` and `options.js` for a dedicated options page backed by `chrome.storage.local` (token field currently disabled).
+- Synced saved options into the full-page header via `tab.js`, and added a "Save options" button in the header to write defaults from within the uploader.
+- Updated `tab.html` header to a two-column, accordion-based layout (default expanded) with a clear-log button.
+- Extracted inline styles from `tab.html` and `options.html` into `css/tab.css` and `css/options.css`.

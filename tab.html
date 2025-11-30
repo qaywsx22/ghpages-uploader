@@ -9,14 +9,14 @@
 <script src="js/uikit-icons.min.js"></script>
 </head>
 <body>
-<div class="uk-container uk-container-small">
-  <div class="uk-card uk-card-default uk-margin">
+<div class="uk-container uk-container-small container-main">
+  <div class="uk-card uk-card-default uk-margin uk-flex uk-flex-column uk-flex-nowrap">
     <div class="uk-card-header">
       <h3 class="uk-card-title">GitHub Pages Uploader (Full Page)</h3>
     </div>
     <div class="uk-card-body">
       <form class="uk-form-stacked">
-        <div uk-accordion="multiple: false" class="uk-margin-small-bottom">
+        <div uk-accordion="multiple: false" class="uk-padding-small uk-margin-small-bottom uk-card">
           <div class="uk-accordion-item uk-open">
             <a class="uk-accordion-title" href="#">Options</a>
             <div class="uk-accordion-content">
@@ -83,17 +83,11 @@
                 </div>
               </div>
 
-              <div class="uk-margin">
-                <label class="uk-form-label">Select images to upload</label>
-                <div class="uk-form-controls">
-                  <input class="uk-form-input" id="files" type="file" multiple accept="image/*">
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        <div class="uk-margin">
+        <div class="uk-margin uk-card uk-padding-small">
           <h4 class="uk-heading-bullet">Existing images in target folder</h4>
           <div class="uk-flex uk-flex-between uk-flex-middle uk-margin-small-bottom">
             <p id="existing-images-empty" class="uk-text-meta uk-margin-remove">
@@ -106,8 +100,14 @@
           <div id="existing-images-container" class="uk-grid-small uk-child-width-1-4@m" uk-grid></div>
         </div>
 
-        <div class="uk-margin">
+        <div class="uk-margin uk-card uk-padding-small">
           <h4 class="uk-heading-bullet">Images to upload</h4>
+          <div class="uk-margin">
+            <label class="uk-form-label">Select images to upload</label>
+            <div class="uk-form-controls">
+              <input class="uk-form-input" id="files" type="file" multiple accept="image/*">
+            </div>
+          </div>
           <p id="upload-images-empty" class="uk-text-meta">
             Select images above to preview them here and choose which ones to commit.
           </p>
@@ -121,7 +121,7 @@
         </div>
       </form>
 
-      <div class="uk-margin">
+      <div class="uk-margin uk-card uk-padding-small log-card">
         <div class="uk-flex uk-flex-between uk-flex-middle">
           <h4 class="uk-card-title uk-margin-remove">Log</h4>
           <button class="uk-button uk-button-default uk-button-small" id="clear-log" type="button">
