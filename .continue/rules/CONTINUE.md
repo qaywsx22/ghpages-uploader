@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Chrome Extension built with Manifest V3 that enables users to resize images locally and push them to a GitHub Pages repository using the Git Data API. The extension provides a user-friendly interface for selecting local images, resizing them to WebP format with specified dimensions and quality, and then uploading them to a GitHub repository via the GitHub API.
+This is a Chrome Extension built with Manifest V3 that enables users to resize images locally and push them to a GitHub Pages repository using the Git Data API. The extension provides a full-page UIKit-based interface for selecting local images, resizing them to WebP format with specified dimensions and quality, previewing existing and new images, and then uploading them to a GitHub repository via the GitHub API.
 
 Key features:
 - Local image processing (no server upload)
@@ -10,7 +10,8 @@ Key features:
 - Resizing with width/height constraints
 - Integration with GitHub Pages repositories
 - Commit creation and branch updates via Git Data API
-- Modern UI with UIKit design library
+- Modern full-page UI with UIKit design library
+- Preview grids for existing repo images and new uploads with drag-and-drop ordering and selection
 
 ## Getting Started
 
@@ -26,13 +27,16 @@ Key features:
 4. Click "Load unpacked" and select this project directory
 
 ### Basic Usage
-1. Click the extension icon to open the popup
-2. Enter your GitHub repository (owner/repo format)
-3. Provide your GitHub PAT with repo scope
-4. Select target folder in the repository
-5. Set resize parameters (width, height, quality)
-6. Select images to upload
-7. Click "Upload"
+1. Click the extension icon; this opens the **full-page uploader** (`tab.html`) in a new tab.
+2. In the "Options" accordion:
+   - Enter your GitHub repository (owner/repo format)
+   - Provide your GitHub PAT with repo scope
+   - Select the target branch and folder
+   - Adjust resize parameters (width, height, quality) as needed
+3. (Optional) Click **Refresh** in the "Existing images" section to load current images from the target folder and select any to delete.
+4. Use the file input in "Images to upload" to select local images; they appear as cards with previews and checkboxes.
+5. Use the checkboxes in both sections to choose which images to upload and/or delete.
+6. Click **Commit** to create a single commit that applies all selected uploads and deletions.
 
 ### Running Tests
 This project is a Chrome extension, so testing is typically done manually through the extension UI.
@@ -41,33 +45,53 @@ This project is a Chrome extension, so testing is typically done manually throug
 
 ```
 .
-├── manifest.json          # Chrome extension manifest
-├── popup.html             # Extension popup UI with UIKit
-├── popup.js               # Popup logic and flow control
+├── manifest.json          # Chrome extension manifest (MV3, background service worker)
+├── background.js          # Service worker; opens full-page tab on extension icon click
+├── tab.html               # Main full-page UIKit-based uploader UI
+├── tab.js                 # Wires tab.html to uploader logic and options
+├── uploader.js            # Shared upload logic (image processing + Git/GitHub flow)
 ├── utils.js               # Core functions for image processing and GitHub API interaction
-├── css/                   # UIKit CSS files
-├── js/                    # UIKit JS files
+├── options.html           # Options page UI
+├── options.js             # Options page logic (Chrome storage integration)
+├── css/
+│   ├── uikit.min.css      # UIKit CSS
+│   ├── tab.css            # Styles for full-page uploader
+│   └── options.css        # Styles for options page
+├── js/
+│   ├── uikit.min.js       # UIKit JS
+│   └── uikit-icons.min.js # UIKit icons
 ├── icons/                 # Extension icons (16x16, 48x48, 128x128)
+├── popup.html             # Legacy popup UI (no longer used)
+├── popup.js               # Legacy popup logic (no longer used)
 ├── .git/                  # Git repository (for reference)
 └── tmp/                   # Temporary directory (for testing)
 ```
 
 ### Key Files
 
-**manifest.json**: Defines the extension metadata, permissions (storage, scripting), and host permissions for GitHub API access.
+**manifest.json**: Defines the extension metadata, permissions (storage, scripting), and host permissions for GitHub API access. Uses a background service worker (`background.js`) and a full-page tab (`tab.html`) instead of a browser-action popup.
 
-**popup.html**: Contains the UI for repository configuration, resize settings, file selection, and upload controls using UIKit components.
+**tab.html**: Contains the full-page UIKit UI for repository configuration, resize settings, existing-image previews, upload previews, and the commit/log sections. Uses UIKit grid, card, accordion, and sortable components.
 
-**popup.js**: Implements the main upload flow logic that handles:
+**tab.js**: Initializes the full-page UI, wires up form fields and buttons, syncs defaults from Chrome storage, and calls `initUploader` from `uploader.js`.
+
+**uploader.js**: Implements the main upload flow logic that handles:
 - File selection and processing
-- Image resizing and conversion
+- Image resizing and conversion via `resizeAndConvert`
 - GitHub API interaction (branch info, blob creation, tree creation, commit and push)
-- Error handling and logging
+- Listing existing files in a target folder via `listFolderFiles`
+- Rendering preview cards for both existing and upload images, with checkboxes for selection
+- Error handling and logging to the on-page log area
+
+**options.html / options.js**: Implement a dedicated options page backed by `chrome.storage.local` for saving defaults such as repo, branch, and folder (token field currently disabled in the UI for security considerations).
+
+**popup.html / popup.js**: Legacy popup-based UI and logic from the original version. These are no longer wired into the manifest and can be considered deprecated.
 
 **utils.js**: Contains the core functionality:
 - `resizeAndConvert()`: Resizes and converts images to WebP format
 - GitHub API helpers (`githubFetch`, `createBlob`, `createTree`, `commitAndPush`)
-- `getBranchInfo()`: Retrieves branch information (note: has a bug - incorrect endpoint)
+- `getBranchInfo()`: Retrieves branch information (note: historically had a bug with an incorrect endpoint)
+- `listFolderFiles()`: Lists files in the configured GitHub folder for previews
 
 ## Development Workflow
 
