@@ -97,7 +97,12 @@
               Refresh
             </button>
           </div>
-          <div id="existing-images-container" class="uk-grid-small uk-child-width-1-4@m" uk-grid></div>
+          <ul
+            id="existing-images-container"
+            class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove"
+            uk-grid
+            uk-sortable="handle: .uk-sortable-handle"
+          ></ul>
         </div>
 
         <div class="uk-margin uk-card uk-padding-small">
@@ -111,7 +116,12 @@
           <p id="upload-images-empty" class="uk-text-meta">
             Select images above to preview them here and choose which ones to commit.
           </p>
-          <div id="upload-images-container" class="uk-grid-small uk-child-width-1-4@m" uk-grid></div>
+          <ul
+            id="upload-images-container"
+            class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove"
+            uk-grid
+            uk-sortable="handle: .uk-sortable-handle"
+          ></ul>
         </div>
 
         <div class="uk-margin">

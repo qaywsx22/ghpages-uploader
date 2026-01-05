@@ -61,6 +61,52 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
   /** @type {{id:string, path:string, downloadUrl:string, selected:boolean}[]} */
   let existingFiles = [];
 
+  const createPreviewListItem = ({ selected, onSelectedChange, imgSrc, imgAlt, captionText }) => {
+    const item = document.createElement('li');
+    item.className = 'uk-text-center';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'uk-inline uk-width-1-1';
+
+    const handle = document.createElement('span');
+    handle.className = 'uk-sortable-handle uk-position-small uk-position-top-left';
+    handle.setAttribute('uk-icon', 'icon: menu');
+
+    const label = document.createElement('label');
+    label.className = 'uk-display-block';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = selected;
+    checkbox.className = 'uk-checkbox';
+    checkbox.style.marginBottom = '4px';
+    checkbox.addEventListener('change', () => {
+      onSelectedChange?.(checkbox.checked);
+    });
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = imgAlt;
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '120px';
+    img.loading = 'lazy';
+    img.className = 'uk-border-rounded';
+
+    const caption = document.createElement('div');
+    caption.className = 'uk-text-small uk-margin-small-top';
+    caption.textContent = captionText;
+
+    label.appendChild(checkbox);
+    label.appendChild(img);
+    label.appendChild(caption);
+
+    wrap.appendChild(handle);
+    wrap.appendChild(label);
+    item.appendChild(wrap);
+
+    return item;
+  };
+
   const renderUploadPreviews = () => {
     if (!uploadContainer) return;
     uploadContainer.innerHTML = '';
@@ -72,38 +118,17 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
     if (uploadEmpty) uploadEmpty.style.display = 'none';
 
     for (const f of uploadFiles) {
-      const col = document.createElement('div');
-      col.className = 'uk-text-center';
-
-      const label = document.createElement('label');
-      label.className = 'uk-display-block';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = f.selected;
-      checkbox.className = 'uk-checkbox';
-      checkbox.style.marginBottom = '4px';
-      checkbox.addEventListener('change', () => {
-        f.selected = checkbox.checked;
+      const item = createPreviewListItem({
+        selected: f.selected,
+        onSelectedChange: next => {
+          f.selected = next;
+        },
+        imgSrc: f.previewUrl,
+        imgAlt: f.file.name,
+        captionText: f.file.name
       });
 
-      const img = document.createElement('img');
-      img.src = f.previewUrl;
-      img.alt = f.file.name;
-      img.style.maxWidth = '100%';
-      img.style.maxHeight = '120px';
-      img.loading = 'lazy';
-      img.className = 'uk-border-rounded';
-
-      const caption = document.createElement('div');
-      caption.className = 'uk-text-small uk-margin-small-top';
-      caption.textContent = f.file.name;
-
-      label.appendChild(checkbox);
-      label.appendChild(img);
-      label.appendChild(caption);
-      col.appendChild(label);
-      uploadContainer.appendChild(col);
+      uploadContainer.appendChild(item);
     }
   };
 
@@ -118,38 +143,19 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
     if (existingEmpty) existingEmpty.style.display = 'none';
 
     for (const f of existingFiles) {
-      const col = document.createElement('div');
-      col.className = 'uk-text-center';
-
-      const label = document.createElement('label');
-      label.className = 'uk-display-block';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = f.selected;
-      checkbox.className = 'uk-checkbox';
-      checkbox.style.marginBottom = '4px';
-      checkbox.addEventListener('change', () => {
-        f.selected = checkbox.checked;
+      const item = createPreviewListItem({
+        selected: f.selected,
+        onSelectedChange: next => {
+          f.selected = next;
+        },
+        imgSrc: f.downloadUrl,
+        imgAlt: f.path,
+        captionText: f.path.split('/').slice(-1)[0]
       });
 
-      const img = document.createElement('img');
-      img.src = f.downloadUrl;
-      img.alt = f.path;
-      img.style.maxWidth = '100%';
-      img.style.maxHeight = '120px';
-      img.loading = 'lazy';
-      img.className = 'uk-border-rounded';
 
-      const caption = document.createElement('div');
-      caption.className = 'uk-text-small uk-margin-small-top';
-      caption.textContent = f.path.split('/').slice(-1)[0];
+      existingContainer.appendChild(item);
 
-      label.appendChild(checkbox);
-      label.appendChild(img);
-      label.appendChild(caption);
-      col.appendChild(label);
-      existingContainer.appendChild(col);
     }
   };
 
