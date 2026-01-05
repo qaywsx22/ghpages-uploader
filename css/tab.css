@@ -51,6 +51,10 @@ body {
   background-color: #3367d6;
 }
 
+.gph-preview-item.uk-first-column {
+  margin-top: 10px;
+}
+
 #log {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;

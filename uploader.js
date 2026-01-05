@@ -63,49 +63,74 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
 
   const createPreviewListItem = ({ selected, onSelectedChange, imgSrc, imgAlt, captionText }) => {
     const item = document.createElement('li');
-    item.className = 'uk-text-center';
+    item.className = 'uk-text-center gph-preview-item';
 
-    const wrap = document.createElement('div');
-    wrap.className = 'uk-inline uk-width-1-1';
+    const card = document.createElement('div');
+    card.className = 'uk-card uk-card-default uk-card-small uk-height-1-1 uk-flex uk-flex-column';
 
-    const handle = document.createElement('span');
-    handle.className = 'uk-sortable-handle uk-position-small uk-position-top-left';
-    handle.setAttribute('uk-icon', 'icon: menu');
-
-    const label = document.createElement('label');
-    label.className = 'uk-display-block';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = selected;
-    checkbox.className = 'uk-checkbox';
-    checkbox.style.marginBottom = '4px';
-    checkbox.addEventListener('change', () => {
-      onSelectedChange?.(checkbox.checked);
-    });
+    const cardBody = document.createElement('div');
+    cardBody.className = 'uk-card-body uk-sortable-handle';
+    cardBody.style.display = 'flex';
+    cardBody.style.alignItems = 'center';
+    cardBody.style.justifyContent = 'center';
 
     const img = document.createElement('img');
     img.src = imgSrc;
     img.alt = imgAlt;
     img.style.maxWidth = '100%';
-    img.style.maxHeight = '120px';
+    img.style.maxHeight = '160px';
     img.loading = 'lazy';
     img.className = 'uk-border-rounded';
 
-    const caption = document.createElement('div');
-    caption.className = 'uk-text-small uk-margin-small-top';
+    cardBody.appendChild(img);
+
+    const cardFooter = document.createElement('div');
+    cardFooter.className = 'uk-card-footer';
+    cardFooter.style.display = 'flex';
+    cardFooter.style.flexDirection = 'column';
+    cardFooter.style.justifyContent = 'space-between';
+    // cardFooter.style.minHeight = '64px';
+
+    const firstRow = document.createElement('div');
+
+    firstRow.className = 'uk-flex uk-flex-middle uk-flex-between';
+
+    const label = document.createElement('label');
+    label.className = 'uk-flex uk-flex-middle uk-margin-remove';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = selected;
+    checkbox.className = 'uk-checkbox';
+    checkbox.style.marginRight = '6px';
+    checkbox.addEventListener('change', () => {
+      onSelectedChange?.(checkbox.checked);
+    });
+
+    const caption = document.createElement('span');
+    caption.className = 'uk-text-small uk-text-truncate';
     caption.textContent = captionText;
 
     label.appendChild(checkbox);
-    label.appendChild(img);
     label.appendChild(caption);
+    firstRow.appendChild(label);
 
-    wrap.appendChild(handle);
-    wrap.appendChild(label);
-    item.appendChild(wrap);
+    const secondRow = document.createElement('div');
+    secondRow.className = 'uk-text-meta uk-text-small uk-text-truncate';
+    secondRow.style.textAlign = 'left';
+    secondRow.textContent = imgAlt;
+
+
+    cardFooter.appendChild(firstRow);
+    cardFooter.appendChild(secondRow);
+
+    card.appendChild(cardBody);
+    card.appendChild(cardFooter);
+    item.appendChild(card);
 
     return item;
   };
+
 
   const renderUploadPreviews = () => {
     if (!uploadContainer) return;
