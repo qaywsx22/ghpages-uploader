@@ -243,3 +243,7 @@ The extension utilizes the UIKit design library to provide a modern, responsive,
 - Updated `tab.js` to persist resize mode, side/pad/crop-specific options, output format, and no-upscale options in `chrome.storage.local`, and to toggle visibility of the mode-specific blocks.
 - Extended `uploader.js` to read resize mode, side/pad/crop-specific options, output format, and no-upscale settings from the UI and pass them into `resizeAndConvert`.
 - Extended `resizeAndConvert` in `utils.js` to support multiple resize modes, side-selection behavior, optional padding/cropping anchors, a no-upscale guard, and WEBP/JPG/PNG output formats.
+
+## Recent Changes (Alt text editing)
+
+- Added in-place editing for alt text in preview cards. Double-click the alt-text row to edit; changes are applied when the input loses focus or when Enter/Tab is pressed, and the underlying `img.alt` attribute is updated accordingly.

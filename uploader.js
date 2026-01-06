@@ -61,7 +61,7 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
   /** @type {{id:string, path:string, downloadUrl:string, selected:boolean}[]} */
   let existingFiles = [];
 
-  const createPreviewListItem = ({ selected, onSelectedChange, imgSrc, imgAlt, captionText }) => {
+    const createPreviewListItem = ({ selected, onSelectedChange, imgSrc, imgAlt, captionText }) => {
     const item = document.createElement('li');
     item.className = 'uk-text-center gph-preview-item';
 
@@ -118,8 +118,52 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
     const secondRow = document.createElement('div');
     secondRow.className = 'uk-text-meta uk-text-small uk-text-truncate';
     secondRow.style.textAlign = 'left';
-    secondRow.textContent = imgAlt;
 
+    let currentAlt = imgAlt;
+    secondRow.textContent = currentAlt;
+
+    const enableAltEditing = () => {
+      // Prevent multiple editors on the same row
+      if (secondRow.querySelector('input')) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'uk-input uk-form-small';
+      input.value = currentAlt;
+
+      secondRow.textContent = '';
+      secondRow.appendChild(input);
+
+      input.focus();
+      input.select();
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+
+        let nextAlt = input.value.trim();
+        if (!nextAlt) {
+          nextAlt = imgAlt;
+        }
+
+        currentAlt = nextAlt;
+        img.alt = nextAlt;
+        secondRow.textContent = nextAlt;
+      };
+
+      input.addEventListener('blur', () => {
+        finish();
+      });
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === 'Tab') {
+          finish();
+        }
+      });
+    };
+
+    secondRow.addEventListener('dblclick', enableAltEditing);
 
     cardFooter.appendChild(firstRow);
     cardFooter.appendChild(secondRow);
@@ -130,6 +174,7 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
 
     return item;
   };
+
 
 
   const renderUploadPreviews = () => {
