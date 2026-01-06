@@ -18,6 +18,23 @@ function applyStoredOptionsToHeader() {
           el.value = opts[id];
         }
       });
+
+      // Restore resize mode radio group
+      if (opts.resizeMode) {
+        const modeRadio = document.querySelector(
+          `input[name="resize-mode"][value="${opts.resizeMode}"]`
+        );
+        if (modeRadio) {
+          modeRadio.checked = true;
+        }
+      }
+
+      // Restore "do not resize smaller images" checkbox
+      const noUpscaleEl = document.getElementById('no-upscale');
+      if (noUpscaleEl && typeof opts.noUpscale === 'boolean') {
+        noUpscaleEl.checked = opts.noUpscale;
+      }
+
       resolve();
     });
   });
@@ -31,6 +48,17 @@ function saveHeaderOptionsToStorage() {
     if (!el) return;
     options[id] = el.value;
   });
+
+  const modeRadio = document.querySelector('input[name="resize-mode"]:checked');
+  if (modeRadio) {
+    options.resizeMode = modeRadio.value;
+  }
+
+  const noUpscaleEl = document.getElementById('no-upscale');
+  if (noUpscaleEl) {
+    options.noUpscale = !!noUpscaleEl.checked;
+  }
+
   chrome.storage.local.set({ options });
 }
 

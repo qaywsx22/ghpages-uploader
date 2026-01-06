@@ -71,24 +71,24 @@ This project is a Chrome extension, so testing is typically done manually throug
 
 **manifest.json**: Defines the extension metadata, permissions (storage, scripting), and host permissions for GitHub API access. Uses a background service worker (`background.js`) and a full-page tab (`tab.html`) instead of a browser-action popup.
 
-**tab.html**: Contains the full-page UIKit UI for repository configuration, resize settings, existing-image previews, upload previews, and the commit/log sections. Uses UIKit grid, card, accordion, and sortable components.
+**tab.html**: Contains the full-page UIKit UI for repository configuration, resize settings (width, height, quality), resize mode selection (Fit, Stretch, Side, Pad, Crop), the "Do not resize smaller images" toggle, existing-image previews, upload previews, and the commit/log sections. Uses UIKit grid, card, accordion, and sortable components.
 
-**tab.js**: Initializes the full-page UI, wires up form fields and buttons, syncs defaults from Chrome storage, and calls `initUploader` from `uploader.js`.
+**tab.js**: Initializes the full-page UI, wires up form fields and buttons, syncs defaults from Chrome storage (including resize mode and the no-upscale option), and calls `initUploader` from `uploader.js`.
 
 **uploader.js**: Implements the main upload flow logic that handles:
 - File selection and processing
-- Image resizing and conversion via `resizeAndConvert`
+- Image resizing and conversion via `resizeAndConvert`, based on the selected resize mode and "do not resize smaller images" flag
 - GitHub API interaction (branch info, blob creation, tree creation, commit and push)
 - Listing existing files in a target folder via `listFolderFiles`
-- Rendering preview cards for both existing and upload images, with checkboxes for selection
+- Rendering card-based preview items for both existing and upload images, with checkboxes for selection and a card body that acts as the sortable drag handle
 - Error handling and logging to the on-page log area
 
-**options.html / options.js**: Implement a dedicated options page backed by `chrome.storage.local` for saving defaults such as repo, branch, and folder (token field currently disabled in the UI for security considerations).
+**options.html / options.js**: Implement a dedicated options page backed by `chrome.storage.local` for saving defaults such as repo, branch, folder, and other non-sensitive settings (token field currently disabled in the UI for security considerations).
 
 **popup.html / popup.js**: Legacy popup-based UI and logic from the original version. These are no longer wired into the manifest and can be considered deprecated.
 
 **utils.js**: Contains the core functionality:
-- `resizeAndConvert()`: Resizes and converts images to WebP format
+- `resizeAndConvert()`: Resizes and converts images to WebP format, supporting multiple resize modes (Fit, Stretch, Side, Pad, Crop), optional padding/cropping anchors, and an option to avoid upscaling smaller images
 - GitHub API helpers (`githubFetch`, `createBlob`, `createTree`, `commitAndPush`)
 - `getBranchInfo()`: Retrieves branch information (note: historically had a bug with an incorrect endpoint)
 - `listFolderFiles()`: Lists files in the configured GitHub folder for previews
@@ -234,3 +234,8 @@ The extension utilizes the UIKit design library to provide a modern, responsive,
 - Synced saved options into the full-page header via `tab.js`, and added a "Save options" button in the header to write defaults from within the uploader.
 - Updated `tab.html` header to a two-column, accordion-based layout (default expanded) with a clear-log button.
 - Extracted inline styles from `tab.html` and `options.html` into `css/tab.css` and `css/options.css`.
+- Added a UIKit-based resize mode radio group (Fit, Stretch, Side, Pad, Crop) to `tab.html`.
+- Added a "Do not resize images that are already smaller than the target" checkbox to avoid unintended upscaling.
+- Updated `tab.js` to persist resize mode and no-upscale options in `chrome.storage.local`.
+- Extended `uploader.js` to read resize mode and no-upscale settings from the UI and pass them into `resizeAndConvert`.
+- Extended `resizeAndConvert` in `utils.js` to support multiple resize modes, optional padding/cropping anchors, and a no-upscale guard.

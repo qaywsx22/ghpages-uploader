@@ -259,11 +259,18 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
       return;
     }
 
-    const width = parseInt(widthInput?.value || '0', 10) || 0;
+        const width = parseInt(widthInput?.value || '0', 10) || 0;
     const height = parseInt(heightInput?.value || '0', 10) || 0;
     const quality = parseInt(qualityInput?.value || '80', 10) || 80;
 
+    const modeInput = document.querySelector('input[name="resize-mode"]:checked');
+    const resizeMode = modeInput ? modeInput.value : 'fit';
+
+    const noUpscaleInput = document.getElementById('no-upscale');
+    const noUpscale = !!noUpscaleInput?.checked;
+
     const selectedUploads = uploadFiles.filter(f => f.selected);
+
     const selectedDeletes = existingFiles.filter(f => f.selected);
 
     if (!selectedUploads.length && !selectedDeletes.length) {
@@ -281,11 +288,15 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
 
       const treeEntries = [];
 
-      // Handle uploads (add/update files)
+            // Handle uploads (add/update files)
       for (const f of selectedUploads) {
         log(`Processing ${f.file.name}…`);
-        const { name, blob } = await resizeAndConvert(f.file, width, height, quality);
+        const { name, blob } = await resizeAndConvert(f.file, width, height, quality, {
+          mode: resizeMode,
+          noUpscale
+        });
         const sha = await createBlob(owner, repo, token, await blob.arrayBuffer());
+
         const targetFolder = folder ? folder : '';
         const path = targetFolder ? `${targetFolder}${name}` : name;
         treeEntries.push({ path, sha, mode: '100644' });

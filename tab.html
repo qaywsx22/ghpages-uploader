@@ -1,83 +1,111 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>GitHub Pages Uploader – Full Page</title>
-<link rel="stylesheet" href="css/uikit.min.css">
-<link rel="stylesheet" href="css/tab.css">
-<script src="js/uikit.min.js"></script>
-<script src="js/uikit-icons.min.js"></script>
+  <meta charset="utf-8">
+  <title>GitHub Pages Uploader – Full Page</title>
+  <link rel="stylesheet" href="css/uikit.min.css">
+  <link rel="stylesheet" href="css/tab.css">
+  <script src="js/uikit.min.js"></script>
+  <script src="js/uikit-icons.min.js"></script>
 </head>
+
 <body>
-<div class="uk-container uk-container-small container-main">
-  <div class="uk-card uk-card-default uk-margin uk-flex uk-flex-column uk-flex-nowrap">
-    <div class="uk-card-header">
-      <h3 class="uk-card-title">GitHub Pages Uploader (Full Page)</h3>
-    </div>
-    <div class="uk-card-body">
-      <form class="uk-form-stacked">
-        <div uk-accordion="multiple: false" class="uk-padding-small uk-margin-small-bottom uk-card">
-          <div class="uk-accordion-item uk-open">
-            <a class="uk-accordion-title" href="#">Options</a>
-            <div class="uk-accordion-content">
-              <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-2@m">
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="repo">Repository (owner/repo)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="repo" type="text" placeholder="octocat/Hello-World">
+  <div class="uk-container uk-container-small container-main">
+    <div class="uk-card uk-card-default uk-margin uk-flex uk-flex-column uk-flex-nowrap">
+      <div class="uk-card-header">
+        <h3 class="uk-card-title">GitHub Pages Uploader (Full Page)</h3>
+      </div>
+      <div class="uk-card-body">
+        <form class="uk-form-stacked">
+          <div uk-accordion="multiple: false" class="uk-padding-small uk-margin-small-bottom uk-card">
+            <div class="uk-accordion-item uk-open">
+              <a class="uk-accordion-title" href="#">Options</a>
+              <div class="uk-accordion-content">
+                <div class="uk-grid-small" uk-grid>
+                  <div class="uk-width-1-2@m">
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="repo">Repository (owner/repo)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="repo" type="text" placeholder="octocat/Hello-World">
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="folder">Target folder in repo</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="folder" type="text" placeholder="images/">
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="width">Resize width (px, 0 to keep original)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="width" type="number" value="800">
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <div class="uk-form-controls">
+                        <label>
+                          <input class="uk-checkbox" id="no-upscale" type="checkbox">
+                          Do not resize images that are already smaller than the target
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
+                      <label class="uk-form-label">Resize mode</label>
+                      <div class="uk-form-controls">
+                        <div class="uk-grid-small uk-child-width-auto" uk-grid>
+                          <label><input class="uk-radio" type="radio" name="resize-mode" value="fit" checked>
+                            Fit</label>
+                          <label><input class="uk-radio" type="radio" name="resize-mode" value="stretch">
+                            Stretch</label>
+                          <label><input class="uk-radio" type="radio" name="resize-mode" value="side"> Side</label>
+                          <label><input class="uk-radio" type="radio" name="resize-mode" value="pad"> Pad</label>
+                          <label><input class="uk-radio" type="radio" name="resize-mode" value="crop"> Crop</label>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="folder">Target folder in repo</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="folder" type="text" placeholder="images/">
+                  <div class="uk-width-1-2@m">
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="branch">Branch (default: main)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="branch" type="text" placeholder="main" value="main">
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="width">Resize width (px, 0 to keep original)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="width" type="number" value="800">
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="token">GitHub PAT (repo scope)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="token" type="password" placeholder="ghp_...">
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div class="uk-width-1-2@m">
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="branch">Branch (default: main)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="branch" type="text" placeholder="main" value="main">
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="height">Resize height (px, 0 to keep original)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="height" type="number" value="600">
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="token">GitHub PAT (repo scope)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="token" type="password" placeholder="ghp_...">
+                    <div class="uk-margin">
+                      <label class="uk-form-label" for="quality">Quality (0–100, default 80)</label>
+                      <div class="uk-form-controls">
+                        <input class="uk-form-input" id="quality" type="number" value="80">
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="height">Resize height (px, 0 to keep original)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="height" type="number" value="600">
-                    </div>
-                  </div>
-
-                  <div class="uk-margin">
-                    <label class="uk-form-label" for="quality">Quality (0–100, default 80)</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-form-input" id="quality" type="number" value="80">
-                    </div>
-                  </div>
-
-                  <div class="uk-margin">
-                    <div class="uk-form-controls">
-                      <button class="uk-button uk-button-default uk-button-small" id="save-header-options" type="button">
-                        Save options
-                      </button>
+                    <div class="uk-margin">
+                      <div class="uk-form-controls">
+                        <button class="uk-button uk-button-default uk-button-small" id="save-header-options"
+                          type="button">
+                          Save options
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -85,65 +113,59 @@
 
             </div>
           </div>
-        </div>
 
-        <div class="uk-margin uk-card uk-padding-small">
-          <h4 class="uk-heading-bullet">Existing images in target folder</h4>
-          <div class="uk-flex uk-flex-between uk-flex-middle uk-margin-small-bottom">
-            <p id="existing-images-empty" class="uk-text-meta uk-margin-remove">
-              No existing images loaded. Fill repo, branch and folder, then click "Refresh".
-            </p>
-            <button class="uk-button uk-button-default uk-button-small" id="refresh-existing" type="button">
-              Refresh
-            </button>
+          <div class="uk-margin uk-card uk-padding-small">
+            <h4 class="uk-heading-bullet">Existing images in target folder</h4>
+            <div class="uk-flex uk-flex-between uk-flex-middle uk-margin-small-bottom">
+              <p id="existing-images-empty" class="uk-text-meta uk-margin-remove">
+                No existing images loaded. Fill repo, branch and folder, then click "Refresh".
+              </p>
+              <button class="uk-button uk-button-default uk-button-small" id="refresh-existing" type="button">
+                Refresh
+              </button>
+            </div>
+            <ul id="existing-images-container"
+              class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove" uk-grid
+              uk-sortable="handle: .uk-sortable-handle"></ul>
           </div>
-          <ul
-            id="existing-images-container"
-            class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove"
-            uk-grid
-            uk-sortable="handle: .uk-sortable-handle"
-          ></ul>
-        </div>
 
-        <div class="uk-margin uk-card uk-padding-small">
-          <h4 class="uk-heading-bullet">Images to upload</h4>
+          <div class="uk-margin uk-card uk-padding-small">
+            <h4 class="uk-heading-bullet">Images to upload</h4>
+            <div class="uk-margin">
+              <label class="uk-form-label">Select images to upload</label>
+              <div class="uk-form-controls">
+                <input id="files" type="file" multiple accept="image/*">
+              </div>
+            </div>
+            <p id="upload-images-empty" class="uk-text-meta">
+              Select images above to preview them here and choose which ones to commit.
+            </p>
+            <ul id="upload-images-container"
+              class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove" uk-grid
+              uk-sortable="handle: .uk-sortable-handle"></ul>
+          </div>
+
           <div class="uk-margin">
-            <label class="uk-form-label">Select images to upload</label>
             <div class="uk-form-controls">
-              <input id="files" type="file" multiple accept="image/*">
+              <button class="uk-button uk-button-primary" id="upload" type="button">Commit</button>
             </div>
           </div>
-          <p id="upload-images-empty" class="uk-text-meta">
-            Select images above to preview them here and choose which ones to commit.
-          </p>
-          <ul
-            id="upload-images-container"
-            class="uk-grid-small uk-child-width-1-4@m uk-list uk-margin-remove uk-padding-remove"
-            uk-grid
-            uk-sortable="handle: .uk-sortable-handle"
-          ></ul>
-        </div>
+        </form>
 
-        <div class="uk-margin">
-          <div class="uk-form-controls">
-            <button class="uk-button uk-button-primary" id="upload" type="button">Commit</button>
+        <div class="uk-margin uk-card uk-padding-small log-card">
+          <div class="uk-flex uk-flex-between uk-flex-middle">
+            <h4 class="uk-card-title uk-margin-remove">Log</h4>
+            <button class="uk-button uk-button-default uk-button-small" id="clear-log" type="button">
+              Clear
+            </button>
           </div>
+          <pre id="log" class="uk-pre"></pre>
         </div>
-      </form>
-
-      <div class="uk-margin uk-card uk-padding-small log-card">
-        <div class="uk-flex uk-flex-between uk-flex-middle">
-          <h4 class="uk-card-title uk-margin-remove">Log</h4>
-          <button class="uk-button uk-button-default uk-button-small" id="clear-log" type="button">
-            Clear
-          </button>
-        </div>
-        <pre id="log" class="uk-pre"></pre>
       </div>
     </div>
   </div>
-</div>
 
-<script src="tab.js" type="module"></script>
+  <script src="tab.js" type="module"></script>
 </body>
+
 </html>
