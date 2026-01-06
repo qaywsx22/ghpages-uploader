@@ -1,3 +1,5 @@
+You should not run multiple tools in parallel and you should not apply multiple find-and-replace edits with multi_edit. Do each opereation atomically.
+
 # GitHub Pages Image Uploader - Project Guide
 
 ## Project Overview
