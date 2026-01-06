@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-This is a Chrome Extension built with Manifest V3 that enables users to resize images locally and push them to a GitHub Pages repository using the Git Data API. The extension provides a full-page UIKit-based interface for selecting local images, resizing them to WebP format with specified dimensions and quality, previewing existing and new images, and then uploading them to a GitHub repository via the GitHub API.
+This is a Chrome Extension built with Manifest V3 that enables users to resize images locally and push them to a GitHub Pages repository using the Git Data API. The extension provides a full-page UIKit-based interface for selecting local images, resizing them to WebP, JPG, or PNG format with specified dimensions and quality, previewing existing and new images, and then uploading them to a GitHub repository via the GitHub API.
 
 Key features:
 - Local image processing (no server upload)
-- WebP conversion with customizable quality
+- WebP/JPG/PNG conversion with customizable quality
 - Resizing with width/height constraints
 - Integration with GitHub Pages repositories
 - Commit creation and branch updates via Git Data API
@@ -71,13 +71,13 @@ This project is a Chrome extension, so testing is typically done manually throug
 
 **manifest.json**: Defines the extension metadata, permissions (storage, scripting), and host permissions for GitHub API access. Uses a background service worker (`background.js`) and a full-page tab (`tab.html`) instead of a browser-action popup.
 
-**tab.html**: Contains the full-page UIKit UI for repository configuration, resize settings (width, height, quality), resize mode selection (Fit, Stretch, Side, Pad, Crop), the "Do not resize smaller images" toggle, existing-image previews, upload previews, and the commit/log sections. Uses UIKit grid, card, accordion, and sortable components.
+**tab.html**: Contains the full-page UIKit UI for repository configuration, resize settings (width, height, quality), resize mode selection (Fit, Stretch, Side, Pad, Crop), mode-specific option blocks (Side: side selection; Pad: background color and position; Crop: crop position), an output format selector (WEBP, JPG, PNG), the "Do not resize smaller images" toggle, existing-image previews, upload previews, and the commit/log sections. Uses UIKit grid, card, accordion, and sortable components.
 
-**tab.js**: Initializes the full-page UI, wires up form fields and buttons, syncs defaults from Chrome storage (including resize mode and the no-upscale option), and calls `initUploader` from `uploader.js`.
+**tab.js**: Initializes the full-page UI, wires up form fields and buttons, syncs defaults from Chrome storage (including resize mode, side/pad/crop-specific options, output format, and the no-upscale option), controls visibility of mode-specific option blocks, and calls `initUploader` from `uploader.js`.
 
 **uploader.js**: Implements the main upload flow logic that handles:
 - File selection and processing
-- Image resizing and conversion via `resizeAndConvert`, based on the selected resize mode and "do not resize smaller images" flag
+- Image resizing and conversion via `resizeAndConvert`, based on the selected resize mode, mode-specific options (side option, pad background/position, crop position), output format, and "do not resize smaller images" flag
 - GitHub API interaction (branch info, blob creation, tree creation, commit and push)
 - Listing existing files in a target folder via `listFolderFiles`
 - Rendering card-based preview items for both existing and upload images, with checkboxes for selection and a card body that acts as the sortable drag handle
@@ -88,7 +88,7 @@ This project is a Chrome extension, so testing is typically done manually throug
 **popup.html / popup.js**: Legacy popup-based UI and logic from the original version. These are no longer wired into the manifest and can be considered deprecated.
 
 **utils.js**: Contains the core functionality:
-- `resizeAndConvert()`: Resizes and converts images to WebP format, supporting multiple resize modes (Fit, Stretch, Side, Pad, Crop), optional padding/cropping anchors, and an option to avoid upscaling smaller images
+- `resizeAndConvert()`: Resizes and converts images to WEBP, JPG, or PNG format, supporting multiple resize modes (Fit, Stretch, Side, Pad, Crop), optional padding/cropping anchors and side-selection behavior, and an option to avoid upscaling smaller images
 - GitHub API helpers (`githubFetch`, `createBlob`, `createTree`, `commitAndPush`)
 - `getBranchInfo()`: Retrieves branch information (note: historically had a bug with an incorrect endpoint)
 - `listFolderFiles()`: Lists files in the configured GitHub folder for previews
@@ -133,8 +133,8 @@ This extension uses the GitHub Git Data API to:
 
 ### Image Processing Pipeline
 1. Select images via file input
-2. Convert to WebP format with specified quality
-3. Resize images to target dimensions
+2. Resize images according to the selected mode and parameters (Fit, Stretch, Side, Pad, Crop; optional no-upscale)
+3. Convert to the selected output format (WEBP, JPG, PNG) with the specified quality
 4. Create blobs with base64-encoded image data
 5. Build tree structure with new files
 6. Create commit with tree reference
@@ -235,7 +235,9 @@ The extension utilizes the UIKit design library to provide a modern, responsive,
 - Updated `tab.html` header to a two-column, accordion-based layout (default expanded) with a clear-log button.
 - Extracted inline styles from `tab.html` and `options.html` into `css/tab.css` and `css/options.css`.
 - Added a UIKit-based resize mode radio group (Fit, Stretch, Side, Pad, Crop) to `tab.html`.
+- Added mode-specific option blocks for Side (side selection), Pad (background color and position), and Crop (crop position) under the resize mode group.
+- Added an output format radio group (WEBP, JPG, PNG) to `tab.html`.
 - Added a "Do not resize images that are already smaller than the target" checkbox to avoid unintended upscaling.
-- Updated `tab.js` to persist resize mode and no-upscale options in `chrome.storage.local`.
-- Extended `uploader.js` to read resize mode and no-upscale settings from the UI and pass them into `resizeAndConvert`.
-- Extended `resizeAndConvert` in `utils.js` to support multiple resize modes, optional padding/cropping anchors, and a no-upscale guard.
+- Updated `tab.js` to persist resize mode, side/pad/crop-specific options, output format, and no-upscale options in `chrome.storage.local`, and to toggle visibility of the mode-specific blocks.
+- Extended `uploader.js` to read resize mode, side/pad/crop-specific options, output format, and no-upscale settings from the UI and pass them into `resizeAndConvert`.
+- Extended `resizeAndConvert` in `utils.js` to support multiple resize modes, side-selection behavior, optional padding/cropping anchors, a no-upscale guard, and WEBP/JPG/PNG output formats.

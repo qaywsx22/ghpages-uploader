@@ -259,19 +259,36 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
       return;
     }
 
-        const width = parseInt(widthInput?.value || '0', 10) || 0;
+    const width = parseInt(widthInput?.value || '0', 10) || 0;
     const height = parseInt(heightInput?.value || '0', 10) || 0;
     const quality = parseInt(qualityInput?.value || '80', 10) || 80;
 
     const modeInput = document.querySelector('input[name="resize-mode"]:checked');
     const resizeMode = modeInput ? modeInput.value : 'fit';
 
-    const noUpscaleInput = document.getElementById('no-upscale');
+        const noUpscaleInput = document.getElementById('no-upscale');
     const noUpscale = !!noUpscaleInput?.checked;
+
+    const formatInput = document.querySelector('input[name="output-format"]:checked');
+    const outputFormat = formatInput ? formatInput.value : 'webp';
+
+    const sideOptionEl = document.getElementById('side-option');
+    const sideOption = sideOptionEl?.value || 'longest';
+
+    const padBackgroundEl = document.getElementById('pad-background');
+    const padBackground = padBackgroundEl?.value || '#ffffff';
+
+    const padPositionEl = document.getElementById('pad-position');
+    const padPosition = padPositionEl?.value || 'center';
+
+    const cropPositionEl = document.getElementById('crop-position');
+    const cropPosition = cropPositionEl?.value || 'center';
 
     const selectedUploads = uploadFiles.filter(f => f.selected);
 
+
     const selectedDeletes = existingFiles.filter(f => f.selected);
+
 
     if (!selectedUploads.length && !selectedDeletes.length) {
       alert('Select at least one image to upload or delete before committing.');
@@ -288,13 +305,24 @@ export function initUploader({ logElementId = 'log', uploadButtonId = 'upload' }
 
       const treeEntries = [];
 
-            // Handle uploads (add/update files)
-      for (const f of selectedUploads) {
+      // Handle uploads (add/update files)
+            for (const f of selectedUploads) {
         log(`Processing ${f.file.name}…`);
         const { name, blob } = await resizeAndConvert(f.file, width, height, quality, {
           mode: resizeMode,
-          noUpscale
+          noUpscale,
+          format: outputFormat,
+          sideOption,
+          pad: {
+            background: padBackground,
+            position: padPosition
+          },
+          crop: {
+            position: cropPosition
+          }
         });
+
+
         const sha = await createBlob(owner, repo, token, await blob.arrayBuffer());
 
         const targetFolder = folder ? folder : '';

@@ -4,13 +4,15 @@
  * @param {number} targetWidth
  * @param {number} targetHeight
  * @param {number} quality 0–100
- * @param {{
+  * @param {{
  *   mode?: 'fit' | 'stretch' | 'side' | 'pad' | 'crop',
  *   noUpscale?: boolean,
  *   sideOption?: 'longest' | 'shortest' | 'width' | 'height',
  *   pad?: { background?: string, position?: string },
- *   crop?: { position?: string }
+ *   crop?: { position?: string },
+ *   format?: 'webp' | 'jpg' | 'png'
  * }} [options]
+
  * @returns {Promise<{name:string, blob:Blob}>}
  */
 export async function resizeAndConvert(
@@ -31,8 +33,10 @@ export async function resizeAndConvert(
         noUpscale = false,
         sideOption = 'longest',
         pad = {},
-        crop = {}
+        crop = {},
+        format = 'webp'
       } = options || {};
+
 
       const hasTargetWidth = !!targetWidth;
       const hasTargetHeight = !!targetHeight;
@@ -51,8 +55,8 @@ export async function resizeAndConvert(
           const targetSide = hasTargetWidth
             ? targetWidth
             : hasTargetHeight
-            ? targetHeight
-            : 0;
+              ? targetHeight
+              : 0;
           if (!targetSide) return false;
           const longest = Math.max(W, H);
           return longest <= targetSide;
@@ -182,8 +186,8 @@ export async function resizeAndConvert(
         const targetSide = hasTargetWidth
           ? targetWidth
           : hasTargetHeight
-          ? targetHeight
-          : 0;
+            ? targetHeight
+            : 0;
         if (!targetSide) {
           canvasWidth = W;
           canvasHeight = H;
@@ -287,14 +291,26 @@ export async function resizeAndConvert(
 
       ctx.drawImage(...drawArgs);
 
+      // Determine output format and MIME type
+      let fmt = (format || 'webp').toLowerCase();
+      if (fmt === 'jpeg') fmt = 'jpg';
+      if (fmt !== 'webp' && fmt !== 'jpg' && fmt !== 'png') {
+        fmt = 'webp';
+      }
+      const mimeType = fmt === 'png' ? 'image/png' : fmt === 'jpg' ? 'image/jpeg' : 'image/webp';
+      const ext = fmt === 'png' ? '.png' : fmt === 'jpg' ? '.jpg' : '.webp';
+      const baseName = file.name.replace(/\.[^/.]+$/, '');
+      const outName = baseName + ext;
+
       canvas.toBlob(
         blob => {
           if (!blob) reject(new Error('Canvas toBlob failed'));
-          else resolve({ name: file.name.replace(/\.\w+$/, '.webp'), blob });
+          else resolve({ name: outName, blob });
         },
-        'image/webp',
+        mimeType,
         quality / 100
       );
+
     };
     img.onerror = e => reject(e);
     img.src = URL.createObjectURL(file);

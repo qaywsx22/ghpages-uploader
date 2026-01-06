@@ -46,6 +46,18 @@
                     </div>
 
                     <div class="uk-margin">
+                      <label class="uk-form-label">Output format</label>
+                      <div class="uk-form-controls">
+                        <div class="uk-grid-small uk-child-width-auto" uk-grid>
+                          <label><input class="uk-radio" type="radio" name="output-format" value="webp" checked>
+                            WEBP</label>
+                          <label><input class="uk-radio" type="radio" name="output-format" value="jpg"> JPG</label>
+                          <label><input class="uk-radio" type="radio" name="output-format" value="png"> PNG</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin">
                       <div class="uk-form-controls">
                         <label>
                           <input class="uk-checkbox" id="no-upscale" type="checkbox">
@@ -54,7 +66,7 @@
                       </div>
                     </div>
 
-                    <div class="uk-margin">
+                                        <div class="uk-margin">
                       <label class="uk-form-label">Resize mode</label>
                       <div class="uk-form-controls">
                         <div class="uk-grid-small uk-child-width-auto" uk-grid>
@@ -68,6 +80,62 @@
                         </div>
                       </div>
                     </div>
+
+                    <!-- Mode-specific options -->
+                    <div class="uk-margin" id="mode-options-side" hidden>
+                      <label class="uk-form-label" for="side-option">Side mode options</label>
+                      <div class="uk-form-controls">
+                        <select class="uk-select" id="side-option">
+                          <option value="longest">Longest side</option>
+                          <option value="shortest">Shortest side</option>
+                          <option value="width">Width</option>
+                          <option value="height">Height</option>
+                        </select>
+                      </div>
+                      <p class="uk-text-meta uk-margin-small-top">
+                        Uses the resize width or height as the target side.
+                      </p>
+                    </div>
+
+                    <div class="uk-margin" id="mode-options-pad" hidden>
+                      <label class="uk-form-label">Pad mode options</label>
+                      <div class="uk-form-controls uk-margin-small-bottom">
+                        <label class="uk-form-label" for="pad-background">Background color</label>
+                        <input class="uk-input" id="pad-background" type="color" value="#ffffff">
+                      </div>
+                      <div class="uk-form-controls">
+                        <label class="uk-form-label" for="pad-position">Image position</label>
+                        <select class="uk-select" id="pad-position">
+                          <option value="center">Center</option>
+                          <option value="top">Top</option>
+                          <option value="bottom">Bottom</option>
+                          <option value="left">Left</option>
+                          <option value="right">Right</option>
+                          <option value="top-left">Top left</option>
+                          <option value="top-right">Top right</option>
+                          <option value="bottom-left">Bottom left</option>
+                          <option value="bottom-right">Bottom right</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="uk-margin" id="mode-options-crop" hidden>
+                      <label class="uk-form-label" for="crop-position">Crop mode options</label>
+                      <div class="uk-form-controls">
+                        <select class="uk-select" id="crop-position">
+                          <option value="center">Center</option>
+                          <option value="top">Top</option>
+                          <option value="bottom">Bottom</option>
+                          <option value="left">Left</option>
+                          <option value="right">Right</option>
+                          <option value="top-left">Top left</option>
+                          <option value="top-right">Top right</option>
+                          <option value="bottom-left">Bottom left</option>
+                          <option value="bottom-right">Bottom right</option>
+                        </select>
+                      </div>
+                    </div>
+
                   </div>
 
                   <div class="uk-width-1-2@m">
@@ -107,6 +175,7 @@
                         </button>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
