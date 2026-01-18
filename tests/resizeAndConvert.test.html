@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>resizeAndConvert tests</title>
+  <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script src="https://unpkg.com/mocha@10.2.0/mocha.js"></script>
+  <script src="https://unpkg.com/chai@4.3.10/chai.js"></script>
+  <script>
+    mocha.setup('bdd');
+    const { expect } = chai;
+  </script>
+
+  <script type="module">
+    import { resizeAndConvert } from '../utils.js';
+
+    // Helper: create a simple colored test image File of given size
+    async function createTestImageFile(width, height, name = 'test.png') {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(0, 0, width, height);
+
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (!blob) {
+            reject(new Error('Failed to create test image blob'));
+            return;
+          }
+          const file = new File([blob], name, { type: 'image/png' });
+          resolve(file);
+        }, 'image/png');
+      });
+    }
+
+    async function loadImageFromBlob(blob) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        };
+        img.onerror = e => {
+          URL.revokeObjectURL(url);
+          reject(e);
+        };
+        img.src = url;
+      });
+    }
+
+    describe('resizeAndConvert - basic behavior', () => {
+      it('stretches image to exact target size when mode=stretch', async () => {
+        const file = await createTestImageFile(400, 200, 'stretch.png');
+        const { blob } = await resizeAndConvert(file, 200, 100, 80, {
+          mode: 'stretch',
+          format: 'png'
+        });
+
+        expect(blob).to.be.instanceOf(Blob);
+        const info = await loadImageFromBlob(blob);
+        expect(info.width).to.equal(200);
+        expect(info.height).to.equal(100);
+      });
+
+      it('fits image inside target box when mode=fit', async () => {
+        const file = await createTestImageFile(400, 200, 'fit.png'); // 2:1
+        const { blob } = await resizeAndConvert(file, 200, 200, 80, {
+          mode: 'fit',
+          format: 'png'
+        });
+
+        const info = await loadImageFromBlob(blob);
+        // Should fit inside 200x200 while preserving ratio 2:1 => 200x100
+        expect(info.width).to.equal(200);
+        expect(info.height).to.equal(100);
+      });
+
+      it('side mode scales longest side to target size', async () => {
+        const file = await createTestImageFile(400, 200, 'side.png'); // longest side = 400
+        const { blob } = await resizeAndConvert(file, 300, 0, 80, {
+          mode: 'side',
+          sideOption: 'longest',
+          format: 'png'
+        });
+
+        const info = await loadImageFromBlob(blob);
+        // Longest side should now be 300, ratio preserved => 300x150
+        expect(Math.max(info.width, info.height)).to.equal(300);
+        expect(info.width / info.height).to.be.closeTo(400 / 200, 0.01);
+      });
+    });
+
+    describe('resizeAndConvert - pad and crop', () => {
+      it('pad mode keeps canvas at target size', async () => {
+        const file = await createTestImageFile(400, 200, 'pad.png');
+        const { blob } = await resizeAndConvert(file, 300, 300, 80, {
+          mode: 'pad',
+          pad: {
+            background: '#00ff00',
+            position: 'center'
+          },
+          format: 'png'
+        });
+
+        const info = await loadImageFromBlob(blob);
+        // Canvas is exactly target size
+        expect(info.width).to.equal(300);
+        expect(info.height).to.equal(300);
+      });
+
+      it('crop mode outputs exact target dimensions', async () => {
+        const file = await createTestImageFile(400, 300, 'crop.png');
+        const { blob } = await resizeAndConvert(file, 200, 200, 80, {
+          mode: 'crop',
+          crop: { position: 'center' },
+          format: 'png'
+        });
+
+        const info = await loadImageFromBlob(blob);
+        expect(info.width).to.equal(200);
+        expect(info.height).to.equal(200);
+      });
+    });
+
+    describe('resizeAndConvert - noUpscale', () => {
+      it('does not upscale smaller images when noUpscale=true', async () => {
+        const file = await createTestImageFile(100, 50, 'no-upscale.png');
+        const { blob } = await resizeAndConvert(file, 300, 300, 80, {
+          mode: 'fit',
+          noUpscale: true,
+          format: 'png'
+        });
+
+        const info = await loadImageFromBlob(blob);
+        // Should keep original dimensions
+        expect(info.width).to.equal(100);
+        expect(info.height).to.equal(50);
+      });
+    });
+
+    describe('resizeAndConvert - output formats', () => {
+      it('produces WEBP with .webp extension by default', async () => {
+        const file = await createTestImageFile(100, 100, 'format.png');
+        const { name, blob } = await resizeAndConvert(file, 0, 0, 80, {
+          mode: 'fit',
+          format: 'webp'
+        });
+
+        expect(name.endsWith('.webp')).to.be.true;
+        expect(blob.type).to.equal('image/webp');
+      });
+
+      it('produces JPG with .jpg extension when format=jpg', async () => {
+        const file = await createTestImageFile(100, 100, 'format.png');
+        const { name, blob } = await resizeAndConvert(file, 0, 0, 80, {
+          mode: 'fit',
+          format: 'jpg'
+        });
+
+        expect(name.endsWith('.jpg')).to.be.true;
+        expect(blob.type).to.equal('image/jpeg');
+      });
+
+      it('produces PNG with .png extension when format=png', async () => {
+        const file = await createTestImageFile(100, 100, 'format.png');
+        const { name, blob } = await resizeAndConvert(file, 0, 0, 80, {
+          mode: 'fit',
+          format: 'png'
+        });
+
+        expect(name.endsWith('.png')).to.be.true;
+        expect(blob.type).to.equal('image/png');
+      });
+    });
+
+    mocha.run();
+  </script>
+</body>
+</html>
